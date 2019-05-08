@@ -1,3 +1,3 @@
-<h1>Training_PostgreSQL_R</h1>
+<h1>Training, PostgreSQL, and R</h1>
 
 Work on creating a PostgresSQL Database for the training department
