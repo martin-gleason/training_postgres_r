@@ -45,7 +45,5 @@ division_equity %>%
     summarise(n = n()) %>% 
     arrange(desc(n)) 
 
-
-
 class(employee_table$First_Name)
 class(employee_table$Last_Name)

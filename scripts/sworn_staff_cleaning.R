@@ -3,7 +3,7 @@
 library(tidyverse)
 library(lubridate)
 
-credited_training_2018 <- readRDS("2018_training.RDS")
+credited_training_2018 <- readRDS("inputs/2018_training.RDS")
 
 date_origin <- as_date("1899-12-30")
 
@@ -18,7 +18,8 @@ trainings_2018 <- sworn_staff %>%
          date = DATE,
          hours = HOURS) %>%
   filter(!is.na(date)) %>%
-  unique()
+  unique() %>% 
+  arrange(desc(date))
 
 trainings_2018$date <- as.Date(as.numeric(trainings_2018$date), 
                                origin = date_origin)
@@ -35,11 +36,11 @@ employee_table <- sworn_staff %>%
            str_trim("both")) %>% 
   mutate("First_Name" = str_extract(`EMPLOYEE NAME`, pattern ="(?<=,)[^\\]]+") %>% 
            str_trim("both")) %>%
-  mutate("SPO_First_Name" = str_extract(`SUPERVISOR`, pattern ="(?<=,)[^\\]]+") %>% 
+  mutate("Supervisor_First_Name" = str_extract(`SUPERVISOR`, pattern ="(?<=,)[^\\]]+") %>% 
            str_trim("both")) %>%
-  mutate("SPO_Last_Name" = str_extract(`SUPERVISOR`, pattern = "^[^,]+") %>% 
+  mutate("Supervisor_Last_Name" = str_extract(`SUPERVISOR`, pattern = "^[^,]+") %>% 
            str_trim("both")) %>%
-  select(Division = DIVISION, SPO_First_Name, SPO_Last_Name, First_Name, Last_Name)
+  select(Division = DIVISION, Supervisor_First_Name, Supervisor_Last_Name, First_Name, Last_Name)
 
 no_first <- employee_table %>% 
   filter(is.na(First_Name))
@@ -48,7 +49,7 @@ no_first <- no_first %>%
   mutate(fixed_Last_Name = str_extract(Last_Name, "^[^\\s]+")) %>%
   mutate(fixed_First_Name = str_extract(Last_Name, "(?<=\\s)[^\\]]+")) %>%
   mutate(First_Name = str_trim(fixed_First_Name)) %>%
-  select(Division, SPO_First_Name, SPO_Last_Name, 
+  select(Division, Supervisor_First_Name, Supervisor_Last_Name, 
          First_Name, Last_Name = fixed_Last_Name)
 
 patterson <- employee_table %>% 
@@ -59,15 +60,15 @@ patterson <- employee_table %>%
 employee_table <- employee_table %>%
   bind_rows(no_first)
 
-SPO_DCPO <- employee_table %>%
-  select(SPO_First_Name, SPO_Last_Name, Division)
+Supervisor_DCPO <- employee_table %>%
+  select(Supervisor_First_Name, Supervisor_Last_Name, Division)
 
-PO_SPO <- employee_table %>%
-  anti_join(SPO_DCPO, by = c("First_Name" = "SPO_First_Name", 
-                             "Last_Name" = "SPO_Last_Name")) %>%
-  select(Division, First_Name, Last_Name, SPO_First_Name, SPO_Last_Name)
+PO_Supervisor <- employee_table %>%
+  anti_join(Supervisor_DCPO, by = c("First_Name" = "Supervisor_First_Name", 
+                             "Last_Name" = "Supervisor_Last_Name")) %>%
+  select(Division, First_Name, Last_Name, Supervisor_First_Name, Supervisor_Last_Name)
 
-PO <- PO_SPO %>%
+PO <- PO_Supervisor %>%
   select(First_Name, Last_Name, Division) %>%
   mutate(PO_Title = "II")
 
@@ -80,18 +81,18 @@ francisco <- PO %>%
   select(First_Name, Last_Name, Division, PO_Title) %>%
   mutate(PO_Title = "III")
 
-SPO_most <- PO_SPO %>% 
-  select(SPO_First_Name, SPO_Last_Name, Division) %>%
+Supervisor_most <- PO_Supervisor %>% 
+  select(Supervisor_First_Name, Supervisor_Last_Name, Division) %>%
   unique() %>% 
   mutate(PO_Title = "III") %>%
-  arrange(SPO_Last_Name)
+  arrange(Supervisor_Last_Name)
 
-SPO <- SPO_most %>%
-  select(First_Name = SPO_First_Name, 
-         Last_Name = SPO_Last_Name, Division, PO_Title) %>%
+Supervisor <- Supervisor_most %>%
+  select(First_Name = Supervisor_First_Name, 
+         Last_Name = Supervisor_Last_Name, Division, PO_Title) %>%
   bind_rows(francisco)
 
-avik <- SPO %>%
+avik <- Supervisor %>%
   filter(Last_Name == "Das") %>%
   mutate(PO_Title = "VII", Division = "Acting Director")
 
@@ -105,34 +106,34 @@ donna <- PO %>%
 
 PO <- PO %>% filter(Last_Name != "Neal")
 
-SPO %>% filter(Last_Name == "Arenas")
-SPO %>% filter(Last_Name == "Patterson")
+Supervisor %>% filter(Last_Name == "Arenas")
+Supervisor %>% filter(Last_Name == "Patterson")
 
-kevin <- SPO %>%
+kevin <- Supervisor %>%
   filter(Last_Name == "Hickey") %>%
-  mutate(SPO_First_Name = First_Name,
-         SPO_Last_Name = Last_Name,
+  mutate(Supervisor_First_Name = First_Name,
+         Supervisor_Last_Name = Last_Name,
          PO_Title = "IV")
 
-SPO <- SPO %>%
+Supervisor <- Supervisor %>%
   filter(Last_Name != "Hickey")
 
-SPO <- SPO %>%
+Supervisor <- Supervisor %>%
   filter(Last_Name != "Das")
 
-SPO <- SPO %>%
+Supervisor <- Supervisor %>%
   filter(Last_Name != "Patterson")
 
-SPO %>%
+Supervisor %>%
   filter(Last_Name == "Hickey")
 
-DCPO <- SPO_DCPO %>%
-  anti_join(SPO, 
-            by = c("SPO_First_Name" = "First_Name", 
-                   "SPO_Last_Name" = "Last_Name")) %>%
+DCPO <- Supervisor_DCPO %>%
+  anti_join(Supervisor, 
+            by = c("Supervisor_First_Name" = "First_Name", 
+                   "Supervisor_Last_Name" = "Last_Name")) %>%
   bind_rows(kevin) %>%
-  select(First_Name = SPO_First_Name,
-         Last_Name = SPO_Last_Name,
+  select(First_Name = Supervisor_First_Name,
+         Last_Name = Supervisor_Last_Name,
          PO_Title,
          Division) %>%
   mutate(PO_Title = "IV") %>%
@@ -151,7 +152,7 @@ Division <- employee_table %>%
   unique()
 
 Full_Employee_Table <- PO %>%
-  full_join(SPO) %>%
+  full_join(Supervisor) %>%
   full_join(DCPO) %>%
   arrange(Last_Name)
 
