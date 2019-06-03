@@ -55,7 +55,7 @@ all_court_staff <- full_employee_table %>%
          position_end_date = as.Date(NA),
          Section = as.integer(NA),
          Unit = as.character(NA),
-         ID = 1:nrow(all_court_staff)) %>% 
+         ID = 1:nrow(unique(full_employee_table))) %>% 
   select(ID, First_Name, Last_Name, Section, Division, Unit, PO_Title, 
          position_start_date, position_end_date)
 #
@@ -174,93 +174,4 @@ all_court_staff <- find_replace(all_court_staff, Division,
                                 "Director's Office")
 
 write_rds(all_court_staff, "tidy_inputs/all_court_staff.RDS")
-
-
-
-### Division Work ####
-Divisions_df <- all_court_staff %>%
-  group_by(Division) %>%
-  summarize(count = n())
-
-staff_occurance <- all_court_staff %>%
-  group_by(First_Name, Last_Name) %>%
-  summarize(occurance = n()) %>%
-  arrange(desc(occurance))
-
-staff_of_one <- staff_occurance %>%
-  filter(occurance == 1) %>%
-  select(First_Name, Last_Name)
-
-duplicates <- staff_occurance %>%
-  filter(occurance >= 2) %>%
-  arrange(Last_Name) 
-
-duplicates_table <- duplicates %>%
-  mutate(ID = as.integer(NA),
-         Section = as.integer(NA),
-         Unit = as.character(NA), 
-         PO_Title = as.character(NA), 
-         position_start_date = as.Date(NA),
-         position_start_date = as.Date(NA)) %>%
-  select(-occurance)
-
-all_court_staff <- all_court_staff %>% anti_join(duplicates)
-
-duplicates_table
-
-
-View(all_court_staff %>%
-  select(ID, Last_Name) %>%
-  arrange(ID))
-
-
-
-
-#creation of PO I and II Table
-PO <- all_court_staff %>%
-  filter(PO_Title == "I" | PO_Title == "II") %>%
-  unique() %>%
-  group_by(First_Name, Last_Name)
-
-dup_PO <- PO %>% 
-  group_by(First_Name, Last_Name) %>%
-  summarize(occurance = n()) %>%
-  arrange(desc(occurance)) %>%
-  filter(occurance >= 2) %>%
-  select(First_Name, Last_Name)
-
-PO_temp <- PO %>%
-  anti_join(dup_PO) %>%
-  arrange(Last_Name) %>%
-  mutate(position_start_date = today)
-
-PO %>%
-  inner_join(dup_PO) %>%
-  arrange(Last_Name)
-
-support_professionals <- all_court_staff %>%
-  filter(PO_Title == "Support Professional")
-
-all_court_staff$Division <- all_court_staff$Division %>%
-  str_replace_all("ChicagoEast", "Chicago East")
-
-divisions <- all_court_staff %>%
-  select(Division) %>% 
-  unique()
-
-all_court_staff %>% 
-  filter(Division == "Advocacy") %>%
-  mutate(position_end_date = end_date)
-
-all_court_staff %>%
-  filter(Division == "Detention Alternatives")
-
-all_court_staff$position_end_date[all_court_staff$Division == "Detention Alternatives"] <- as.Date(end_date)
-all_court_staff$position_end_date[all_court_staff$Division == "Advocacy"] <- as.Date(end_date)
-
- all_court_staff %>%
-  filter()
-
-#turn this into a function
-class(div_List[[6]]$First_Name)
 
