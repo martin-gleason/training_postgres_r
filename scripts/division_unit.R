@@ -126,6 +126,9 @@ all_court_staff <- all_court_staff %>%
         replacement = "Adjudication", replace_column = "Unit")
 
 all_court_staff <- all_court_staff %>%
+  by_id(Division, "Advocacy & Finance", Section, "Personnel")
+
+all_court_staff <- all_court_staff %>%
   by_id(locate_column = "ID", pattern = jb,
         replace_column = "Unit", replacement = "Intake Screening Unit")
 
@@ -157,7 +160,7 @@ all_court_staff <- all_court_staff %>%
 
 all_court_staff <- all_court_staff %>%
   by_id(locate_column = "ID", pattern = 196,
-        replace_column = "Section", "1")
+        replace_column = "Section", "Personnel")
 
 ossd_G_C <- c("Blaszkiewicz", "Walker", "Bovino", "Gresham")
 
@@ -478,7 +481,29 @@ pd_9 <- c(169, 4, 17, 37, 104, 153, 313)
 all_court_staff <- all_court_staff %>%
   by_id("ID", pd_9, "Unit", "Chicago 9th Police District")
 
+gbo <- c(216, 73, 234, 274, 315)
 
+all_court_staff <- all_court_staff %>%
+  by_id("ID", gbo, "Unit", "Chicago 2nd Police District/GBO")
+
+pd_10 <- c(317, 28, 146, 345)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", pd_10, "Unit", "Chicago 10th Police District")
+
+all_court_staff <- all_court_staff %>%
+  by_id("Unit", "Chicago 10th Police District", "Division", "Southeast")
+
+all_court_staff <- all_court_staff %>%
+  by_id(ID, 317, Section, "Chicago Field Probation Services")
+
+all_court_staff <- all_court_staff %>%
+  by_id(Section, "Chicago Field Probation Service", 
+        Section, "Chicago Field Probation Services")
+
+#Suburban Services
+all_court_staff <- all_court_staff %>%
+  by_id(Division, "Southwest Suburban", Section, "Suburban Probation Services")
 
 #QA/Facilitation of cases
 all_court_staff$Division <- as.factor(all_court_staff$Division)
