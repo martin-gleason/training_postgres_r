@@ -1,0 +1,29 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(tidyverse)
+library(gitsum)
+library(lubridate)
+```
+
+```{r log_pull, echo = FALSE, message = FALSE}
+
+time_log <- parse_log_detailed() %>%
+  select(author_name, date, message, 
+         total_insertions, total_deletions) 
+
+
+time 
+
+glimpse(time_log)
+ymd(time_log$date, format = "%Y-m-d %H:%M:%S")
+
+s_time <- time_log[1, 2] 
+
+stop_time <- time_log[nrow(time_log)-1, 2]
+
+stop_time - s_time
+```
+
