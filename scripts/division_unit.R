@@ -1,6 +1,10 @@
 #tidying Divisions and Unit
+library(lubridate)
+
 source(file.path("scripts/find_replace.R"))
 all_court_staff <- read_rds("tidy_inputs/all_court_staff.RDS")
+
+start_date <- as.Date("2019-05-01")
 
 ### Division Work ####
 Divisions_df <- all_court_staff %>%
@@ -166,6 +170,7 @@ all_court_staff <- all_court_staff %>%
         replace_column = "Unit", replacement = "Office Services - Ground & Concourse Level")
 
 rl <- c("Coker", "Vale")
+rs <- c(162, 163)
 
 all_court_staff <- all_court_staff %>%
   by_id(locate_column = "Last_Name", pattern = rl, 
@@ -187,7 +192,7 @@ all_court_staff <- all_court_staff %>%
         replace_column = "Unit", "Stenographic Department")
 
 
-rs <- c(162, 163)
+
 
 
 
@@ -204,8 +209,7 @@ all_court_staff <- all_court_staff %>%
 all_court_staff <- all_court_staff %>%
   by_id("ID", pattern = 117, "PO_Title", "IV")
 
-no_units <- all_court_staff %>%
-  filter(is.na(Unit))
+
 
 all_court_staff <- all_court_staff %>%
   by_id("ID", 341, "Division", "Detention Diversion")
@@ -228,6 +232,8 @@ hcemam <- c(33, 96, 208, 211, 228, 245, 271, 335)
 em247 <- c(93, 160, 214, 233, 320, 287, 262, 98)
 rur <- c(218, 90, 310, 314)
 dsu <- c(200, 52, 181, 185, 215, 275, 356, 368)
+cc <- c(115, 267, 350)
+cc_rur <- c(2, 114, 123, 319, 342)
 
 all_court_staff <- all_court_staff %>%
   by_id("ID", hcempm, "Unit", "Home Confinement/Electronic Monitoring PM")
@@ -244,5 +250,243 @@ all_court_staff <- all_court_staff %>%
 all_court_staff <- all_court_staff %>%
   by_id("ID", dsu, "Unit", "Detention Screening")
 
+all_court_staff <- all_court_staff %>%
+  by_id("ID", cc, "Unit", "Custody Call - Adjudicatory")
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", cc_rur, "Unit", "Custody Call - RUR")
+
+#section 3, g&t division
+all_court_staff %>%
+  filter(Division == "Grants & Technology")
+
+all_court_staff <- all_court_staff %>%
+  by_id("Division", "Grants & Technology", "Section", "Specialized Probation Services")
+
+all_court_staff<- all_court_staff %>%
+  by_id("ID", 331, "Division", "Grants & Technology")
+
+all_court_staff<- all_court_staff %>%
+  by_id("ID", 331, "position_start_date", start_date)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", 15, "Unit", "Grants")
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", 286, "Unit", "C-Five Project Manager")
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", 231, "Unit", "C-Five Project Manager")
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", 286, "PO_Title", "Assistant Project Administrator")
+
+all_court_staff<- all_court_staff %>%
+  by_id("ID", 276, "Division", "Grants & Technology")
+
+all_court_staff<- all_court_staff %>%
+  by_id("ID", 276, "Unit", "Technology")
+
+all_court_staff<- all_court_staff %>%
+  by_id("ID", 306, "Unit", "IT Services")
+
+all_court_staff<- all_court_staff %>%
+  by_id("ID", 207, "Unit", "Title IV-E")
+
+#Clinical
+all_court_staff %>%
+  filter(Division == "Clinical Assessment and Support") %>%
+  View()
+
+all_court_staff <- all_court_staff %>%
+  by_id("Division", "Clinical Assessment and Support", 
+        "Section", "Specialized Probation Services")
+
+ccintake <- c(43, 213, 253, 270)
+csn <- c(42, 97, 246, 224, 291, 272)
+art <- c(289, 130, 80, 323)
+
+all_court_staff<- all_court_staff %>%
+  by_id("ID", ccintake, "Unit", "Central Clinical Intake")
+
+all_court_staff<- all_court_staff %>%
+  by_id("ID", 241, "Unit", "Clinical Support")
+
+all_court_staff<- all_court_staff %>%
+  by_id("ID", csn, "Unit", "Clinical Services")
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", art, "Unit", "Art Therapy")
+
+all_court_staff<- all_court_staff %>%
+  by_id("ID", 202, "PO_Title", "Coordinator")
+
+#EdServices
+
+all_court_staff %>%
+  filter(Division == "Educational Services") %>%
+  View()
+
+all_court_staff<- all_court_staff %>%
+  by_id("Division", "Educational Services", "Section", "Specialized Probation Services")
+
+exp <- c(12, 6, 95, 186, 209, 367)
+all_court_staff <- all_court_staff %>%
+  by_id("ID", exp, "Unit", "Expeditor")
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", 297, "Unit", "Drug Unit")
+
+edad <- c(10, 210, 174, 254)
+all_court_staff <- all_court_staff %>%
+  by_id("ID", edad, "Unit", "Educational Advocacy")
+
+comserv <- c(370, 44, 75, 101, 131, 133, 183, 191, 305)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", comserv, "Unit", "Community Service")
+
+edout <- c(372, 128, 149, 203, 249, 301)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", edout, "Unit", "Educational Outreach")
+
+#IPS
+all_court_staff %>%
+  filter(Division == "IPS") %>%
+  View()
+
+all_court_staff<- all_court_staff %>%
+  by_id("Division", "IPS", 
+        "Section", "Specialized Probation Services")
+
+gsst <- c(204, 74, 172, 282)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", gsst, "Unit", "Gang School Saftey Team")
+
+ipsintake <- c(288, 45, 94, 166, 294)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", ipsintake, "Unit", "IPS Intake")
+
+ips_north <- c(124, 302, 261, 327, 19, 54, 171, 336)
+ips_south <- c(1, 351, 175, 283, 58, 71, 127, 251, 81, 110)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", ips_north, "Unit", "North Teams")
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", ips_south, "Unit", "South Teams")
+
+#Chicago SOuth
+all_court_staff %>%
+  filter(Division == "Chicago South") %>%
+  View()
+
+all_court_staff <- all_court_staff %>%
+  by_id(ID, 53, "Unit", "pd_14, pd_17, pd_18, pd_19, pd_20, pd_24")
+
+all_court_staff <- all_court_staff %>%
+  by_id(ID, 53, "Division", "Chicago South")
+
+all_court_staff <- all_court_staff %>%
+  by_id(ID, 187, "Division", "Chicago South")
+
+all_court_staff <- all_court_staff %>%
+  by_id(ID, 243, "Division", "Chicago South")
+
+all_court_staff <- all_court_staff %>%
+  by_id("Division", "Chicago South", "Section", "Chicago Field Probation Services")
+  
+
+pd_14 <- c(53, 89, 187, 212, 250, 273, 292)
+pd_17 <- pd_14
+pd_18 <- pd_14
+pd_19 <- pd_14
+pd_20 <- pd_14
+pd_24 <- pd_14
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", pd_14, "Unit", "pd_14, pd_17, pd_18, pd_19, pd_20, pd_24")
+
+pd_16 <- c(157, 106, 220, 225, 242, 247)
+pd_25 <- pd_16
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", pd_16, "Unit", "pd_16, pd_25")
+
+eng <- c(165, 5, 40, 85, 304, 312)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", eng, "Unit", "Englewood")
+
+
+pd_5 <- c(229, 61, 161, 188, 236, 311, 167)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", pd_5, "Unit", "Chicago 5th District")
+
+pd_8 <- c(239, 9, 16, 25, 243, 279)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", pd_8, "Unit", "Chicago 8th District")
+
+pd_6 <- c(258, 88, 107, 144, 362, 366)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", pd_6, "Unit", "pd_6, pd_22")
+
+#southeast
+
+all_court_staff %>% 
+  filter(Division == "Southeast") %>%
+  view()
+
+all_court_staff <- all_court_staff %>%
+  by_id(Division, "Southeast", "Section", "Chicago Field Probation Service")
+
+pd_11 <- c(59, 136, 142, 145, 129, 252, 339)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", pd_11, "Unit", "Chicago 11th District")
+
+all_court_staff %>% filter(Division == "Chicago South" & is.na(Unit)) %>% View()
+pd_1 <- c(116, 99, 332, 349)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", pd_1, "Unit", "pd_1, pd_2, pd_12, pd_21")
+
+all_court_staff <- all_court_staff %>%
+  by_id(ID, pd_1, Division, "Southeast")
+
+woodlawn <- c(143, 190, 195, 232, 290)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", woodlawn, "Unit", "Woodlawn")
+
+pd_4 <- c(194, 36, 87, 264, 369)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", pd_4, "Unit", "Chicago 4th Police District")
+
+all_court_staff <- all_court_staff %>%
+  by_id("Unit", "Chicago 4th Police District", "Division", "Southeast")
+
+pd_9 <- c(169, 4, 17, 37, 104, 153, 313)
+
+all_court_staff <- all_court_staff %>%
+  by_id("ID", pd_9, "Unit", "Chicago 9th Police District")
+
+
+
+#QA/Facilitation of cases
 all_court_staff$Division <- as.factor(all_court_staff$Division)
 divisions <- split(all_court_staff, all_court_staff$Division) # useful as a way to figure out what I swrong
+no_units <- all_court_staff %>%
+  filter(is.na(Unit)) 
+
+no_units %>% View()
+
+
+calculation <- nrow(no_units)/nrow(all_court_staff)

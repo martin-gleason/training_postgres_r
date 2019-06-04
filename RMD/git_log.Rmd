@@ -20,9 +20,9 @@ time
 glimpse(time_log)
 ymd(time_log$date, format = "%Y-m-d %H:%M:%S")
 
-s_time <- time_log[1, 2] 
+s_time <- time_log[nrow(time_log)-1, 2] 
 
-stop_time <- time_log[nrow(time_log)-1, 2]
+stop_time <- time_log[nrow(time_log), 2]
 
 stop_time - s_time
 ```
